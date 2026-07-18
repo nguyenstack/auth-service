@@ -38,8 +38,24 @@ function validateLogin(req, res, next) {
   next();
 }
 
+function validateChangePassword(req, res, next) {
+  const { currentPassword, newPassword } = req.body;
+
+  validatePassword(currentPassword);
+  validatePassword(newPassword);
+
+  if (currentPassword === newPassword) {
+    throw new AppError(
+      "Mật khẩu mới phải khác mật khẩu hiện tại",
+      400
+    );
+  }
+
+  next();
+}
 
 module.exports = {
   validateRegister,
   validateLogin,
+  validateChangePassword,
 };

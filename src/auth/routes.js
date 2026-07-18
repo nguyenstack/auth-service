@@ -5,6 +5,8 @@ const authMiddleware = require("../middlewares/auth.middleware");
 const { validateRegister } = require("../middlewares/validate");
 const { validateLogin } = 
 require("../middlewares/validate");
+const { validateChangePassword } =
+require("../middlewares/validate");
 
 // ----- controllers -----
 const registerController = require("./register/controller");
@@ -13,7 +15,7 @@ require("./login/controller");
 const logoutController = require("./logout/controller");
 const refreshController = require("./refresh-token/controller");
 const meController = require("./me/controller");
-
+const changePasswordController = require("./change-password/controller");
 
 const router = express.Router();
 
@@ -48,6 +50,14 @@ router.get(
   "/me",
   authMiddleware,
   meController.me
+);
+
+// ----- ChangePassword -----
+router.patch(
+  "/change-password",
+  authMiddleware,
+  validateChangePassword,
+  changePasswordController.changePassword
 );
 
 module.exports = router;

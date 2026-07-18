@@ -16,6 +16,7 @@ const logoutController = require("./logout/controller");
 const refreshController = require("./refresh-token/controller");
 const meController = require("./me/controller");
 const changePasswordController = require("./change-password/controller");
+const forgotPasswordController = require("./forgot-password/controller");
 
 const router = express.Router();
 
@@ -58,6 +59,11 @@ router.patch(
   authMiddleware,
   validateChangePassword,
   changePasswordController.changePassword
+);
+
+// ----- ForgotPassword -----
+router.post(
+  "/forgot-password",      forgotPasswordController.forgotPassword
 );
 
 module.exports = router;

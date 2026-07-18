@@ -1,3 +1,5 @@
+const AppError = require("../errors/AppError");
+
 function validateEmail(email) {
   if (!email) {
     throw new AppError("Email là bắt buộc", 400);
@@ -27,6 +29,17 @@ function validateRegister(req, res, next) {
   next();
 }
 
+function validateLogin(req, res, next) {
+  const { email, password } = req.body;
+
+  validateEmail(email);
+  validatePassword(password);
+
+  next();
+}
+
+
 module.exports = {
   validateRegister,
+  validateLogin,
 };

@@ -10,6 +10,7 @@ const registerController = require("./register/controller");
 const loginController =
 require("./login/controller");
 const logoutController = require("./logout/controller");
+const refreshController = require("./refresh-token/controller");
 
 const router = express.Router();
 
@@ -31,6 +32,12 @@ router.post(
 router.post(
   "/log-out",
   logoutController.logOut
+);
+
+// ----- Refresh Token -----
+router.post(
+  "/refresh",
+  refreshController.refresh
 );
 
 module.exports = router;

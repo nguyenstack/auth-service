@@ -1,6 +1,7 @@
 const express = require("express");
 
 // ----- middlewares -----
+const authMiddleware = require("../middlewares/auth.middleware");
 const { validateRegister } = require("../middlewares/validate");
 const { validateLogin } = 
 require("../middlewares/validate");
@@ -11,6 +12,8 @@ const loginController =
 require("./login/controller");
 const logoutController = require("./logout/controller");
 const refreshController = require("./refresh-token/controller");
+const meController = require("./me/controller");
+
 
 const router = express.Router();
 
@@ -38,6 +41,13 @@ router.post(
 router.post(
   "/refresh",
   refreshController.refresh
+);
+
+// ----- Me -----
+router.get(
+  "/me",
+  authMiddleware,
+  meController.me
 );
 
 module.exports = router;

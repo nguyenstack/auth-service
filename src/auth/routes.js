@@ -9,6 +9,7 @@ require("../middlewares/validate");
 const registerController = require("./register/controller");
 const loginController =
 require("./login/controller");
+const logoutController = require("./logout/controller");
 
 const router = express.Router();
 
@@ -24,6 +25,12 @@ router.post(
   "/login",
   validateLogin,
   loginController.login
+);
+
+// ----- Logout -----
+router.post(
+  "/log-out",
+  logoutController.logOut
 );
 
 module.exports = router;

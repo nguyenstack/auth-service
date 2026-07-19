@@ -19,6 +19,8 @@ const changePasswordController = require("./change-password/controller");
 const forgotPasswordController = require("./forgot-password/controller");
 const resetPasswordController = 
 require("./reset-password/controller");
+const verifyEmailController =
+require("./verify-email/controller");
 
 const router = express.Router();
 
@@ -72,6 +74,12 @@ router.post(
 router.post(
   "/reset-password",
 resetPasswordController.resetPassword
+);
+
+// ----- verifyEmail -----
+router.get(
+  "/verify-email", 
+  verifyEmailController.verifyEmail
 );
 
 module.exports = router;

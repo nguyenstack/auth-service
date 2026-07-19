@@ -9,7 +9,7 @@ async function register(req, res) {
       password
     );
 
-    res.status(201).json({message: "Tài khoản đã được tạo thành công"});
+    res.status(201).json(registeredUser);
 }
 
 module.exports = {

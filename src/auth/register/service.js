@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const pool = require("../../config/db");
 const AppError = require("../../errors/AppError");
 
@@ -28,7 +29,30 @@ async function register(email, password) {
     [email, passwordHash]
   );
   
-  return insertResult.rows[0];
+    const user = insertResult.rows[0]
+
+     // ----- Tạo Verification Token -----
+  const verifyToken = crypto.randomBytes(32).toString("hex");
+
+  // ----- hash verify token -----
+  const tokenHash = crypto
+    .createHash("sha256")
+    .update(verifyToken)
+    .digest("hex");
+
+  // ----- lưu database -----
+  await pool.query(
+    `
+    INSERT INTO email_verification_tokens (user_id, token_hash, expires_at)
+    VALUES ($1, $2, NOW() + interval '30 minutes')
+    `,
+    [user.id, tokenHash]
+  );
+  
+  return {
+    message: "Đăng ký thành công, chúng tôi đã gửi liên kết xác thực đến email của bạn",
+    verifyToken
+  };
 }
 
 module.exports = {

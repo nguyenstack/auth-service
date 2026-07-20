@@ -6,10 +6,10 @@ const AppError = require("../../errors/AppError");
 async function changePassword(userId, currentPassword, newPassword) {
   const userResult = await pool.query(
     "SELECT password_hash FROM users WHERE id = $1",
-    [userId]
+    [userId],
   );
 
-  const user = userResult.rows[0]
+  const user = userResult.rows[0];
 
   if (!user) {
     throw new AppError("Không tìm thâý người dùng", 404);
@@ -17,7 +17,7 @@ async function changePassword(userId, currentPassword, newPassword) {
 
   const isCurrentPasswordValid = await bcrypt.compare(
     currentPassword,
-    user.password_hash
+    user.password_hash,
   );
 
   if (!isCurrentPasswordValid) {
@@ -33,8 +33,8 @@ async function changePassword(userId, currentPassword, newPassword) {
         updated_at = NOW()
     WHERE id = $2;
     `,
-    
-    [newPasswordHash, userId]
+
+    [newPasswordHash, userId],
   );
   return {
     message: "Mật khẩu đã được cập nhật thành công",
@@ -42,5 +42,5 @@ async function changePassword(userId, currentPassword, newPassword) {
 }
 
 module.exports = {
-    changePassword,
+  changePassword,
 };

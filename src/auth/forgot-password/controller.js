@@ -4,9 +4,7 @@ const authService = require("./service");
 async function forgotPassword(req, res) {
   const { email } = req.body;
 
-  const result = await authService.forgotPassword(
-    email
-  );
+  const result = await authService.forgotPassword(email);
 
   res.status(200).json(result);
 }

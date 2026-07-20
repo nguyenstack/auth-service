@@ -4,12 +4,10 @@ const AppError = require("../../errors/AppError");
 
 // ----- forgotPassword -----
 async function forgotPassword(email) {
-
   // ----- kiểm tra email tồn tại -----
-  const userResult = await pool.query(
-    "SELECT id FROM users WHERE email = $1",
-    [email]
-  );
+  const userResult = await pool.query("SELECT id FROM users WHERE email = $1", [
+    email,
+  ]);
 
   if (userResult.rows.length === 0) {
     return;
@@ -32,12 +30,12 @@ async function forgotPassword(email) {
     INSERT INTO password_reset_tokens (user_id, token_hash, expires_at)
     VALUES ($1, $2, NOW() + interval '15 minutes')
     `,
-    [userId, tokenHash]
+    [userId, tokenHash],
   );
 
   return resetToken;
 }
 
 module.exports = {
-    forgotPassword,
+  forgotPassword,
 };

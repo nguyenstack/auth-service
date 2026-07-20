@@ -8,10 +8,10 @@ async function getMe(userId) {
     FROM users
     WHERE id = $1
     `,
-    [userId]
+    [userId],
   );
 
-   if (!userResult.rows[0]) {
+  if (!userResult.rows[0]) {
     throw new AppError("Không tìm thấy người dùng", 404);
   }
 
@@ -19,5 +19,5 @@ async function getMe(userId) {
 }
 
 module.exports = {
-    getMe,
+  getMe,
 };

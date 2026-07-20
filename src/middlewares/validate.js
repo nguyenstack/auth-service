@@ -45,10 +45,7 @@ function validateChangePassword(req, res, next) {
   validatePassword(newPassword);
 
   if (currentPassword === newPassword) {
-    throw new AppError(
-      "Mật khẩu mới phải khác mật khẩu hiện tại",
-      400
-    );
+    throw new AppError("Mật khẩu mới phải khác mật khẩu hiện tại", 400);
   }
 
   next();

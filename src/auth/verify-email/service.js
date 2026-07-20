@@ -10,19 +10,19 @@ async function verifyEmail(verifyToken) {
     .update(verifyToken)
     .digest("hex");
 
-   const verifyResult = await pool.query(
-  `
+  const verifyResult = await pool.query(
+    `
   SELECT user_id
   FROM email_verification_tokens
   WHERE token_hash = $1
   AND expires_at > NOW()
   `,
-  [tokenHash]
-);
+    [tokenHash],
+  );
 
   if (verifyResult.rows.length === 0) {
-  throw new AppError("Token không hợp lệ hoặc đã hết hạn", 401);
-}
+    throw new AppError("Token không hợp lệ hoặc đã hết hạn", 401);
+  }
 
   const userId = verifyResult.rows[0].user_id;
 
@@ -33,17 +33,17 @@ async function verifyEmail(verifyToken) {
         email_verified_at = NOW()
     WHERE id = $1;
     `,
-    [userId]
+    [userId],
   );
 
   await pool.query(
-        `
+    `
         DELETE FROM email_verification_tokens
         WHERE token_hash = $1
         `,
-        [tokenHash]
-    );
-    return {
+    [tokenHash],
+  );
+  return {
     message: "Xác minh email thành công, vui lòng đăng nhập",
   };
 }

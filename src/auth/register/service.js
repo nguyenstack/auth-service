@@ -5,11 +5,10 @@ const AppError = require("../../errors/AppError");
 
 // ----- REGISTER -----
 async function register(email, password) {
-  
   // ----- kiểm tra email tồn tại -----
   const existingUser = await pool.query(
     "SELECT id FROM users WHERE email = $1",
-    [email]
+    [email],
   );
 
   if (existingUser.rows.length > 0) {
@@ -26,12 +25,12 @@ async function register(email, password) {
     VALUES($1, $2)
     RETURNING id, email
     `,
-    [email, passwordHash]
+    [email, passwordHash],
   );
-  
-    const user = insertResult.rows[0]
 
-     // ----- Tạo Verification Token -----
+  const user = insertResult.rows[0];
+
+  // ----- Tạo Verification Token -----
   const verifyToken = crypto.randomBytes(32).toString("hex");
 
   // ----- hash verify token -----
@@ -46,15 +45,16 @@ async function register(email, password) {
     INSERT INTO email_verification_tokens (user_id, token_hash, expires_at)
     VALUES ($1, $2, NOW() + interval '30 minutes')
     `,
-    [user.id, tokenHash]
+    [user.id, tokenHash],
   );
-  
+
   return {
-    message: "Đăng ký thành công, chúng tôi đã gửi liên kết xác thực đến email của bạn",
-    verifyToken
+    message:
+      "Đăng ký thành công, chúng tôi đã gửi liên kết xác thực đến email của bạn",
+    verifyToken,
   };
 }
 
 module.exports = {
-    register,
+  register,
 };

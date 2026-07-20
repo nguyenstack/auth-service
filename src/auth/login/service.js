@@ -4,12 +4,10 @@ const pool = require("../../config/db");
 const AppError = require("../../errors/AppError");
 // ----- LOGIN -----
 async function login(email, password) {
-  
   // ----- Kiểm tra email -----
-  const userResult = await pool.query(
-    "SELECT * FROM users WHERE email = $1",
-    [email]
-  );
+  const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [
+    email,
+  ]);
 
   const user = userResult.rows[0];
 
@@ -18,10 +16,7 @@ async function login(email, password) {
   }
 
   // ----- Kiểm tra mật khẩu -----
-  const isPasswordMatch = await bcrypt.compare(
-    password,
-    user.password_hash
-  );
+  const isPasswordMatch = await bcrypt.compare(password, user.password_hash);
 
   if (!isPasswordMatch) {
     throw new AppError("Email hoặc mật khẩu không hợp lệ", 401);
@@ -36,7 +31,7 @@ async function login(email, password) {
     process.env.JWT_ACCESS_SECRET,
     {
       expiresIn: "1h",
-    }
+    },
   );
 
   // ----- Tạo Refresh Token -----
@@ -46,22 +41,22 @@ async function login(email, password) {
     },
     process.env.JWT_REFRESH_SECRET,
     {
-      expiresIn: '7d',
-    }
+      expiresIn: "7d",
+    },
   );
 
   // ----- INSERT refresh_tokens -----
   const expiresAt = new Date();
-expiresAt.setDate(expiresAt.getDate() + 7);
-  
+  expiresAt.setDate(expiresAt.getDate() + 7);
+
   await pool.query(
     `
     INSERT INTO refresh_tokens(user_id, token, expires_at)
     VALUES($1, $2, $3)
     `,
-    [user.id, refreshToken, expiresAt]
+    [user.id, refreshToken, expiresAt],
   );
-  
+
   return {
     accessToken,
     refreshToken,
@@ -69,5 +64,5 @@ expiresAt.setDate(expiresAt.getDate() + 7);
 }
 
 module.exports = {
-    login,
+  login,
 };

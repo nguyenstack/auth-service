@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const pool = require("../../config/db");
 const AppError = require("../../errors/AppError");
 // ----- logOut -----
@@ -11,14 +12,20 @@ async function logOut(refreshToken) {
     throw new AppError("Refresh token không hợp lệ", 401);
   }
 
+  // ----- hash verify token -----
+  const tokenHash = crypto
+    .createHash("sha256")
+    .update(refreshToken)
+    .digest("hex");
+
   const refreshTokenResult = await pool.query(
     `
         SELECT *
         FROM refresh_tokens
-        WHERE token = $1
+        WHERE token_hash = $1
           AND user_id = $2
         `,
-    [refreshToken, decodedToken.userId],
+    [tokenHash, decodedToken.userId],
   );
 
   const storedRefreshToken = refreshTokenResult.rows[0];
@@ -30,9 +37,9 @@ async function logOut(refreshToken) {
   await pool.query(
     `
         DELETE FROM refresh_tokens
-        WHERE token = $1
+        WHERE token_hash = $1
         `,
-    [refreshToken],
+    [tokenHash],
   );
 
   return {

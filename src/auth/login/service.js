@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const pool = require("../../config/db");
 const AppError = require("../../errors/AppError");
@@ -45,16 +46,22 @@ async function login(email, password) {
     },
   );
 
-  // ----- INSERT refresh_tokens -----
+  // ----- hash Refresh Token -----
+  const hashedRefreshToken = crypto
+    .createHash("sha256")
+    .update(refreshToken)
+    .digest("hex");
+
+  // ----- INSERT Refresh Token -----
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7);
 
   await pool.query(
     `
-    INSERT INTO refresh_tokens(user_id, token, expires_at)
+    INSERT INTO refresh_tokens(user_id, token_hash, expires_at)
     VALUES($1, $2, $3)
     `,
-    [user.id, refreshToken, expiresAt],
+    [user.id, hashedRefreshToken, expiresAt],
   );
 
   return {
